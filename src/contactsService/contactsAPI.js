@@ -8,7 +8,6 @@ const api = axios.create({
 //action - "contacts/fetchAll"
 export const getAllContacts = async () => {
     const result = await api.get('contacts');
-    console.info('@@@@@RES', result)
     return result.data;
 }
 //action - "contacts/addContact"

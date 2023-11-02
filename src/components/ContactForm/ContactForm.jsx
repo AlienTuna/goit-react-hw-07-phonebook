@@ -1,20 +1,19 @@
 import { useState } from 'react';
 
 import { FormStyled, InputStyled, BtnStyled } from "./ContactForm.styled";
-import { addContact } from 'redux/contactListReducer';
 import { useDispatch, useSelector } from 'react-redux';
+import { requestAddContact } from "dal/requestPhonebookData";
 
 
 export function ContactForm({ onAddContact }) {
     const [name, setName] = useState('');
-    const [number, setNumber] = useState('');
+    const [phone, setPhone] = useState('');
 
     const contacts = useSelector((state) => state.contactList.contacts);
     const dispatch = useDispatch();
 
     const checkContactByName = cName => {
-        const array = contacts;
-        console.info('!!!!!!!', contacts)
+        const array = contacts.items;
         const result = array.find(({ name }) => cName.toLowerCase() === name.toLowerCase())
         if (result) {
             alert(`${cName} is already in contacts`)
@@ -22,11 +21,11 @@ export function ContactForm({ onAddContact }) {
         }
         return false
     }
-    const addNewContact = (name, number) => {
+    const addNewContact = (name, phone) => {
         if (checkContactByName(name)) {
             return
         }
-        dispatch(addContact({ name, number }))
+        dispatch(requestAddContact({ name, phone }))
     }
 
     const saveFormState = e => {
@@ -34,7 +33,7 @@ export function ContactForm({ onAddContact }) {
         switch (name) {
             case 'name': setName(value);
                 break;
-            case 'number': setNumber(value);
+            case 'phone': setPhone(value);
                 break;
             default: return;
         }
@@ -42,12 +41,12 @@ export function ContactForm({ onAddContact }) {
     }
     const clearForm = () => {
         setName('');
-        setNumber('');
+        setPhone('');
     };
     const save = e => {
         e.preventDefault();
         const nameV = e.currentTarget.name.value;
-        const numV = e.currentTarget.number.value;
+        const numV = e.currentTarget.phone.value;
         addNewContact(nameV, numV);
         clearForm();
     }
@@ -70,12 +69,12 @@ export function ContactForm({ onAddContact }) {
             <label>Phone</label>
             <InputStyled
                 type="tel"
-                name="number"
+                name="phone"
                 // pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                 pattern="\+?\d{1,4}?[\u002D.\s]?\(?\d{1,3}?\)?[\u002D.\s]?\d{1,4}[\u002D.\s]?\d{1,4}[\u002D.\s]?\d{1,9}"
                 title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                 required
-                value={number}
+                value={phone}
                 onChange={saveFormState}
             />
             <BtnStyled type="submit">save</BtnStyled>
